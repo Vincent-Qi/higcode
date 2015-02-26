@@ -1,7 +1,7 @@
 package org.senssic.higcode.process;
 
 import org.senssic.higcode.CodeTemplete;
-import org.senssic.higcode.codedescribe.ICodeDescribe;
+import org.senssic.higcode.codedescribe.JavaCode;
 
 public class JavaProcess extends AbstractProcess {
 	private int STATE_TEXT = 1; // 普通文本
@@ -9,16 +9,19 @@ public class JavaProcess extends AbstractProcess {
 	private int STATE_SINGLE_QUOTE = 3; // 单引号
 	private int STATE_MULTI_LINE_COMMENT = 4; // 多行注释
 	private int STATE_LINE_COMMENT = 5; // 单行注释
-	private int lineNumber; // 行号
+	private int lineNumber = 1; // 行号
 	private boolean enableLineNumber = true; // 开启行号标志
-	private CodeTemplete ct;
-
+	private JavaCode iCodeDescribe;
+    public JavaProcess(JavaCode iCodeDescribe){
+    	this.iCodeDescribe=iCodeDescribe;
+    }
 	private String endPrex(String temp) {
 		return temp.substring(0, temp.indexOf(" ")).replaceFirst("<", "</")
 				+ ">";
 	}
 
-	public String process(String src, ICodeDescribe iCodeDescribe) {
+	public String process(String src,
+			CodeTemplete ct) {
 		int currentState = STATE_TEXT;
 		int identifierLength = 0;
 		int currentIndex = -1;
@@ -49,12 +52,12 @@ public class JavaProcess extends AbstractProcess {
 						temp = ct.getPrimitiveTypeStyle();
 						out.insert(out.length() - identifierLength, temp);
 						out.append(endPrex(temp));
-					} else if (identifier.equals(identifier.toUpperCase())
+					} else if (identifier.equals(identifier.toUpperCase())//常量[打写非数字]
 							&& !Character.isDigit(identifier.charAt(0))) {
 						temp = ct.getConstantStyle();
 						out.insert(out.length() - identifierLength, temp);
 						out.append(endPrex(temp));
-					} else if (Character.isUpperCase(identifier.charAt(0))) {
+					} else if (Character.isUpperCase(identifier.charAt(0))) {//第一个大写
 						temp = ct.getNonPrimitiveTypeStyle();
 						out.insert(out.length() - identifierLength, temp);
 						out.append(endPrex(temp));
@@ -75,11 +78,10 @@ public class JavaProcess extends AbstractProcess {
 				break;
 			case '\"':
 				out.append('\"');
-				temp=ct.getDoubleQuoteStyle();
+				temp = ct.getDoubleQuoteStyle();
 				if (currentState == STATE_TEXT) {
 					currentState = STATE_DOUBLE_QUOTE;
-					out.insert(out.length() - ("\"").length(),
-							temp);
+					out.insert(out.length() - ("\"").length(), temp);
 				} else if (currentState == STATE_DOUBLE_QUOTE) {
 					currentState = STATE_TEXT;
 					out.append(endPrex(temp));
@@ -87,12 +89,11 @@ public class JavaProcess extends AbstractProcess {
 				break;
 			case '\'':
 				out.append("\'");
-				temp=ct.getSingleLineCommentStyle();
+				temp = ct.getSingleLineCommentStyle();
 				if (currentState == STATE_TEXT) {
-					
+
 					currentState = STATE_SINGLE_QUOTE;
-					out.insert(out.length() - ("\'").length(),
-							temp);
+					out.insert(out.length() - ("\'").length(), temp);
 				} else if (currentState == STATE_SINGLE_QUOTE) {
 					currentState = STATE_TEXT;
 					out.append(endPrex(temp));
@@ -112,21 +113,19 @@ public class JavaProcess extends AbstractProcess {
 				break;
 			case '*':
 				out.append('*');
-				temp=ct.getMultiLineCommentStyle();
+				temp = ct.getMultiLineCommentStyle();
 				if (currentState == STATE_TEXT && currentIndex > 0
 						&& src.charAt(currentIndex - 1) == '/') {
-					out.insert(out.length() - ("/*").length(),
-							temp);
+					out.insert(out.length() - ("/*").length(), temp);
 					currentState = STATE_MULTI_LINE_COMMENT;
 				}
 				break;
 			case '/':
 				out.append("/");
-				temp=ct.getSingleLineCommentStyle();
+				temp = ct.getSingleLineCommentStyle();
 				if (currentState == STATE_TEXT && currentIndex > 0
 						&& src.charAt(currentIndex - 1) == '/') {
-					out.insert(out.length() - ("//").length(),
-							temp);
+					out.insert(out.length() - ("//").length(), temp);
 					currentState = STATE_LINE_COMMENT;
 				} else if (currentState == STATE_MULTI_LINE_COMMENT) {
 					out.append(endPrex(temp));
@@ -141,14 +140,12 @@ public class JavaProcess extends AbstractProcess {
 				}
 				if (currentChar == '\r' && currentIndex < src.length() - 1) {
 					out.append("\r\n");
-					++currentIndex;
 				} else
 					out.append('\n');
 
 				if (enableLineNumber)
-					temp=ct.getLineNumberStyle();
-					out.append(temp
-							+ (++lineNumber) + "."+endPrex(temp));
+					temp = ct.getLineNumberStyle();
+				out.append(temp + (++lineNumber) + "." + endPrex(temp));
 				break;
 			case 0:
 				if (currentState == STATE_LINE_COMMENT
@@ -160,7 +157,10 @@ public class JavaProcess extends AbstractProcess {
 			}
 			identifierLength = 0;
 		}
-		return out.toString();
+		return out.insert(
+				0,
+				ct.getLineNumberStyle() + "1."
+						+ endPrex(ct.getLineNumberStyle())).toString();
 	}
 
 }

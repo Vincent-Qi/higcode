@@ -1,16 +1,27 @@
 package org.senssic.higcode;
 
 public class CodeTemplete {
-	private String literalStyle;
-	private String keywordStyle;
-	private String primitiveTypeStyle;
-	private String constantStyle;
-	private String nonPrimitiveTypeStyle;
-	private String doubleQuoteStyle;
-	private String singleQuoteStyle;
-	private String multiLineCommentStyle;
-	private String singleLineCommentStyle;
-	private String lineNumberStyle;
+	// 通用
+	private String literalStyle;// 字面常量[null,true,false]
+	private String keywordStyle;// 关键词[super,import...]
+	private String primitiveTypeStyle;// 原始数据类型[int,boolean...]
+	private String constantStyle;// 常量[即大写,private String STRING_IMG="..."]
+	private String nonPrimitiveTypeStyle;// 非原始数据类型[String,类等]
+	private String doubleQuoteStyle;// 双引号内容
+	private String singleQuoteStyle;// 单引号内容
+	private String multiLineCommentStyle;// 多行注释
+	private String singleLineCommentStyle;// 单行注释
+	private String lineNumberStyle;// 行号
+	// javascript
+	private String builtInObject;// 内置对象[Date,Array]
+
+	public String getBuiltInObject() {
+		return builtInObject;
+	}
+
+	public void setBuiltInObject(String builtInObject) {
+		this.builtInObject = builtInObject;
+	}
 
 	public String getLiteralStyle() {
 		return literalStyle;
