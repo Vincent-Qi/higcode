@@ -15,15 +15,13 @@ import org.senssic.higcode.process.SqlProcess;
 
 public class SenCodeManager {
 	private String lanagues[] = { "java", "javascript", "sql", "python",
-			"html/xml" };
+			"html","xml" };
 
 	public IProcess getProcessByName(String language) {
 		if (language == null)
 			throw new NullPointerException();
 		if (Arrays.asList(lanagues).contains(language)) {
-			if (language.equals("java")) {
-				return new JavaProcess(new JavaCode());
-			}
+
 			if (language.equals("javascript")) {
 				return new JavaScriptProcess(new JavaScriptCode());
 			}
@@ -37,7 +35,7 @@ public class SenCodeManager {
 				return new HtmlXmlProcess(new HtmlXmlCode());
 			}
 		}
-		return null;
+		return new JavaProcess(new JavaCode());
 
 	}
 }

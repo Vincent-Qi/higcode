@@ -10,21 +10,18 @@ public class JavaScriptProcess extends AbstractProcess {
 	private int STATE_MULTI_LINE_COMMENT = 4; // 多行注释
 	private int STATE_LINE_COMMENT = 5; // 单行注释
 	private int lineNumber = 1; // 行号
-	private boolean enableLineNumber = true; // 开启行号标志
 	private JavaScriptCode iCodeDescribe;
 
 	public JavaScriptProcess(JavaScriptCode iCodeDescribe) {
 		this.iCodeDescribe = iCodeDescribe;
 	}
+
 	private String endPrex(String temp) {
 		return temp.substring(0, temp.indexOf(" ")).replaceFirst("<", "</")
 				+ ">";
 	}
-	public void setEnableLineNumber(boolean enableLineNumber) {
-		this.enableLineNumber = enableLineNumber;
-	}
-	public String process(String src,
-			CodeTemplete ct) {
+
+	public String process(String src, CodeTemplete ct) {
 		if (super.cheak(src)) {
 			return "";
 		}
@@ -70,13 +67,16 @@ public class JavaScriptProcess extends AbstractProcess {
 			switch (currentChar) {
 
 			case '<':
-				out.append("&lt;");
+				if (super.isEnableEscaping())
+					out.append("&lt;");
 				break;
 			case '>':
-				out.append("&gt;");
+				if (super.isEnableEscaping())
+					out.append("&gt;");
 				break;
 			case '&':
-				out.append("&amp;");
+				if (super.isEnableEscaping())
+					out.append("&amp;");
 				break;
 			case '\"':
 				out.append('\"');
@@ -130,7 +130,7 @@ public class JavaScriptProcess extends AbstractProcess {
 					out.insert(out.length() - ("//").length(), temp);
 					currentState = STATE_LINE_COMMENT;
 				} else if (currentState == STATE_MULTI_LINE_COMMENT) {
-					out.append(endPrex( ct.getMultiLineCommentStyle()));
+					out.append(endPrex(ct.getMultiLineCommentStyle()));
 					currentState = STATE_TEXT;
 				}
 				break;
@@ -145,9 +145,9 @@ public class JavaScriptProcess extends AbstractProcess {
 				} else
 					out.append('\n');
 
-				if (enableLineNumber)
+				if (super.isEnableLineNumber()){
 					temp = ct.getLineNumberStyle();
-				out.append(temp + (++lineNumber) + "." + endPrex(temp));
+				out.append(temp + (++lineNumber) + "." + endPrex(temp));}
 				break;
 			case 0:
 				if (currentState == STATE_LINE_COMMENT
