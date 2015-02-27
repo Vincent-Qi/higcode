@@ -65,7 +65,6 @@ public class AppTest
         cTemplete.setSingleQuoteStyle("<div class=\"SingleQuoteStyle\">");
         cTemplete.setBuiltInObject("<div class=\"BuiltInObject\">");
         
-       // System.out.println(iProcess.process(string, new JavaCode(),cTemplete));
         System.out.println(iProcess.process(string,cTemplete));
     }
 }

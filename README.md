@@ -30,6 +30,7 @@ and then we will see the change of the source code
 
     <div class="KeywordStyle">class</div>  TestCase {
 
+
 > The programming steps
 
  1. we use **SenCodeManager** class get the type of the programming language

@@ -19,9 +19,14 @@ public class JavaProcess extends AbstractProcess {
 		return temp.substring(0, temp.indexOf(" ")).replaceFirst("<", "</")
 				+ ">";
 	}
-
+	public void setEnableLineNumber(boolean enableLineNumber) {
+		this.enableLineNumber = enableLineNumber;
+	}
 	public String process(String src,
 			CodeTemplete ct) {
+		if (super.cheak(src)) {
+			return "";
+		}
 		int currentState = STATE_TEXT;
 		int identifierLength = 0;
 		int currentIndex = -1;
@@ -89,7 +94,7 @@ public class JavaProcess extends AbstractProcess {
 				break;
 			case '\'':
 				out.append("\'");
-				temp = ct.getSingleLineCommentStyle();
+				temp = ct.getSingleQuoteStyle();
 				if (currentState == STATE_TEXT) {
 
 					currentState = STATE_SINGLE_QUOTE;
@@ -128,7 +133,7 @@ public class JavaProcess extends AbstractProcess {
 					out.insert(out.length() - ("//").length(), temp);
 					currentState = STATE_LINE_COMMENT;
 				} else if (currentState == STATE_MULTI_LINE_COMMENT) {
-					out.append(endPrex(temp));
+					out.append(endPrex( ct.getMultiLineCommentStyle()));
 					currentState = STATE_TEXT;
 				}
 				break;
