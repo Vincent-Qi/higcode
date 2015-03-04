@@ -14,8 +14,8 @@ You can choose their own needs to change the code.At present mainly provide are 
 
 > **Note:**
 
-> - java,javascript Be allowed
-> - sql,xml,html,python will be provide in the future.
+> - java,javascript,sql,xml,html,python Be allowed
+> - C#,C/C++/Objectiv-C,CSS,Delphi,Perl,... will be provide in the future.
 > - format code function Has not been implemented but it will be created soon .
 
 #####The source code#####
